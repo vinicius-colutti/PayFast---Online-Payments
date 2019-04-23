@@ -2,9 +2,9 @@ var mysql  = require('mysql');
 
 function createDBConnection(){
 		return mysql.createConnection({
-      host: 'db-eontech.mysql.uhserver.com',
+      host: '######',
       user: 'eontechmaster',
-      password: 'Kelow1203@',
+      password: '#######',
       database: 'db_eontech'
 		});
 }
