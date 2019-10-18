@@ -2,10 +2,10 @@ var mysql  = require('mysql');
 
 function createDBConnection(){
 		return mysql.createConnection({
-      host: '######',
-      user: 'eontechmaster',
-      password: '#######',
-      database: 'db_eontech'
+      host: 'localhost',
+      user: 'root',
+      password: 'bcd127',
+      database: 'db_fastpay'
 		});
 }
 

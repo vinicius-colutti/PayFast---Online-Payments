@@ -4,7 +4,8 @@
   "description": "um gateway para pagamento atraves de recursos http",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "keywords": [
     "gateway",
@@ -20,6 +21,8 @@
     "express-validator": "^5.3.1",
     "mysql": "^2.16.0",
     "restify": "^8.3.0",
-    "restify-clients": "^2.6.4"
+    "restify-clients": "^2.6.4",
+    "promise": "^8.0.3",
+    "q": "^1.5.1"
   }
 }
