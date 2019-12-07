@@ -1,9 +1,20 @@
 module.exports = (app) =>{
 
+  let validarCartao = require("validador-cartao-credito")
+
   app.get('/pagamentos/list', (req, res) => {
     let connection = new app.DAO.connection();
     let pagamentoDao = new app.DAO.PagamentoDao(connection);
     pagamentoDao.lista(res);
+  });
+
+  app.get('/pagamentos/list/:id', (req, res) => {
+    let id = req.params.id; 
+    let pagamento = {};  
+    pagamento.id = id;
+    let connection = new app.DAO.connection();
+    let pagamentoDao = new app.DAO.PagamentoDao(connection);
+    pagamentoDao.listaPorId(pagamento, res);
   });
 
   app.delete('/pagamentos/add/:id', (req, res) =>{
@@ -16,16 +27,7 @@ module.exports = (app) =>{
     let connection = new app.DAO.connection();
     let pagamentoDao = new app.DAO.PagamentoDao(connection);
 
-    pagamentoDao.atualizaStatus(pagamento, (erro, resultado) =>{
-        if(erro){
-          console.log("Erro ao cancelar o pagamento");
-          res.status(500).send(erro);
-        }else{
-          console.log("pagamento cancelado");
-          res.status(204).json(pagamento);
-        }
-
-    });
+    pagamentoDao.atualizaStatus(pagamento, res);
 
   });
 
@@ -44,18 +46,21 @@ module.exports = (app) =>{
   });
 
   app.post('/pagamentos/add', (req, res) => {
-
-      let pagamento = req.body.pagamento;
+      console.log(req.body)
+      let pagamento = req.body.pagamento; 
       pagamento.status = "PENDING";
       let connection = new app.DAO.connection();
       let pagamentoDao = new app.DAO.PagamentoDao(connection);
-
-      if(pagamento.cartao){
-        console.log("OK")
-        pagamentoDao.salvaComCartao(pagamento, res)
+      if(validarCartao(pagamento.cartao)){
+        if(pagamento.cartao){
+          console.log("OK")
+          pagamentoDao.salvaComCartao(pagamento, res)
+        }else{
+          console.log("OK")
+          pagamentoDao.salva(pagamento, res)
+        }
       }else{
-        console.log("OK")
-        pagamentoDao.salva(pagamento, res)
+        res.status(400).send('Invalid card');
       }
 
   });

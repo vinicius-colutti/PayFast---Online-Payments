@@ -38,10 +38,16 @@ PagamentoDao.prototype.lista = function(res) {
     });
 }
 
-PagamentoDao.prototype.buscaPorId = function (id,callback) {
-    this._connection.query("select * from pagamentos where id = ?",[id],callback);
+PagamentoDao.prototype.listaPorId = function (pagamento, res) {
+    let stmt = `select * from pagamentos where id = ?`;
+    let todo =[pagamento.id];
+    let query = this._connection.query(stmt, todo,
+        function(err, result){
+            res.send(result);
+        });
+        
+        console.log(query)    
 }
-
 
 
 PagamentoDao.prototype.atualizaStatus = function (pagamento, res) {
@@ -49,11 +55,25 @@ PagamentoDao.prototype.atualizaStatus = function (pagamento, res) {
     let stmt = `UPDATE pagamentos set status = ? where id = ?`;
     let todo = [pagamento.status, pagamento.id];
 
-    this._connection.query(stmt, todo,
-            function(err, result) {
-                let resultado = {"id_payment": pagamento.id, "status": "CONFIRMED"};
-                res.send(resultado);
-    });
+    this._connection.query(`select * from pagamentos where id = ?`, [pagamento.id],
+        function(err, result){
+            if(result == ''){
+                res.status(400).json("ERRO")
+            }else{
+                this._connection.query(stmt, todo,
+                    function(err, result) {
+                        let resultado = {"id_payment": pagamento.id, "status": pagamento.status};
+                        res.send(resultado);
+                });
+            }
+        }); 
+
+        
+
+        
+
+
+    
 }
 
 
